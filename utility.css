@@ -1,0 +1,14 @@
+.bg_color{
+    background-color: #121212;
+    color:white;
+    
+
+}
+
+.logo{
+    filter: invert();
+}
+
+.playback_buttons{
+    filter: invert(33%) sepia(7%) saturate(8%) hue-rotate(314deg) brightness(95%) contrast(84%);
+}

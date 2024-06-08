@@ -19,7 +19,7 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
     currFolder = folder;
-    let a = await fetch(`${folder}/`)
+    let a = await fetch(`/${folder}/`)
     let response = await a.text();
     let div = document.createElement("div")
     div.innerHTML = response;
@@ -66,12 +66,10 @@ async function getSongs(folder) {
 
 const playMusic = (track, pause = false) => {
     currentSong.src = `/${currFolder}/` + track;
-    // if (!pause) {
-    //     currentSong.play();
-
-    // }
-    currentSong.play();
-    play.src = "pause.svg"
+     if (!pause) {
+        currentSong.play()
+        play.src = "pause.svg"
+    }
     document.querySelector(".songinfo").innerHTML = decodeURI(track);
     document.querySelector(".songtime").innerHTML = "00:00 / 00:00"
 
@@ -79,7 +77,7 @@ const playMusic = (track, pause = false) => {
 }
 
 async function displayAlbums() {
-    let a = await fetch(`songs/`)
+    let a = await fetch(`/songs/`)
     let response = await a.text();
     let div = document.createElement("div")
     div.innerHTML = response;
@@ -91,7 +89,7 @@ async function displayAlbums() {
 
         if (e.href.includes("/songs")) {
             let folder = e.href.split("/").slice(-2)[0]
-            let a = await fetch(`songs/${folder}/info.json`)
+            let a = await fetch(`/songs/${folder}/info.json`)
             let response = await a.json();
 
             cardContainer.innerHTML = cardContainer.innerHTML + `
@@ -116,11 +114,11 @@ async function displayAlbums() {
 }
 
 async function main() {
-    await getSongs(`songs/${currFolder}`)
+    await getSongs("songs/ncs")
 
     playMusic(songs[0], true)
 
-    displayAlbums();
+    await displayAlbums();
 
 
     play.addEventListener("click", () => {
@@ -155,6 +153,8 @@ async function main() {
 
 
     previous.addEventListener("click", () => {
+        currentSong.pause()
+        
         let index = songs.indexOf(currentSong.src.split("/").splice(-1)[0])
         if ((index - 1) >= 0) {
             playMusic(songs[index - 1])
@@ -164,6 +164,7 @@ async function main() {
         }
     })
     next.addEventListener("click", () => {
+        currentSong.pause()
         let index = songs.indexOf(currentSong.src.split("/").splice(-1)[0])
         if ((index + 1) < (songs.length)) {
             playMusic(songs[index + 1])
